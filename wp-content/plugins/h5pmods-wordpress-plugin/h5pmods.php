@@ -42,25 +42,20 @@ if (!defined('WPINC')) {
  * @param int $minorVersion Second part of the version number.
  */
 function h5pmods_alter_semantics(&$semantics, $name, $majorVersion, $minorVersion) {
-  if ($name === 'H5P.InteractiveVideo') {
+  if ($name == 'H5P.InteractiveVideo') {
     // Find correct field
-    for ($i = 0, $l = count($semantics); $i < $l; $i++) {
-      $field = $semantics[$i];
+    $interactiveVideofields = $semantics[0];
+    $assetsFields = $interactiveVideofields->fields[1]->fields;
+    $interationsFields = $assetsFields[0]->field->fields;
 
-      if ($field->name === 'interactiveVideoasd') {
-
-        foreach($field->fields as $innerField) {
-            foreach($interactionsFields as $interactionsField) {
-              if($interactionsField->name === 'goto') {
-                $interactionsField->label = 'hello from php';
-              }
-            }
-          }
-        }
-        // Found our field, change label
-        return;
+    foreach($interationsFields as $interationField) {
+      if($interationField->name == 'label') {
+        array_push($interationField->options,"H5P.Apuntes 1.0");
       }
     }
+
   }
+}
+
 
 add_action('h5p_alter_library_semantics', 'h5pmods_alter_semantics', 10, 4);
