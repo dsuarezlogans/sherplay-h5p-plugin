@@ -50,12 +50,31 @@ function h5pmods_alter_semantics(&$semantics, $name, $majorVersion, $minorVersio
 
     foreach($interationsFields as $interationField) {
       if($interationField->name == 'label') {
-        array_push($interationField->options,"H5P.Apuntes 1.0");
+
       }
     }
 
   }
 }
 
-
 add_action('h5p_alter_library_semantics', 'h5pmods_alter_semantics', 10, 4);
+
+/**
+ * Allows you to alter the parameters of H5P content after it has been filtered
+ * through semantics. This is useful for adapting the content to the current
+ * context.
+ *
+ * In this example we add a paragraph to the question text on all the multiple
+ * choice tasks.
+ *
+ * @param object &$paramters The content input used to "start" the library.
+ * @param string $name The machine readable name of the library.
+ * @param int $majorVersion First part of the version number.
+ * @param int $minorVersion Second part of the version number.
+ */
+function h5pmods_alter_parameters(&$parameters, $name, $majorVersion, $minorVersion) {
+  if ($name === 'H5P.Text') {
+    $parameters->question .= '<p>Generated at ' . time() . '.</p>';
+  }
+}
+add_action('h5p_alter_filtered_parameters', 'h5pmods_alter_parameters', 10, 4);
