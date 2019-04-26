@@ -15,10 +15,10 @@ Also you need to install [sherplay-h5p-library](https://github.com/dsuarezlogans
 
 Before start hacking and runing the project you need to clone the [sherplay-h5p-library](https://github.com/dsuarezlogans/sherplay-h5p-library) repository at the same level of this repository to be able to link the modified `H5P.Text` library and add a `Text` interaction to unblock an `Apunte` Custom Post Type and have `Docker` installed in your machine.
 
-Now you can easily start to work and interact with the plugin by using `docker-compose`. To run the local server, simply run:
+Now you can easily start to work and interact with the plugin. To run the local wordpress server, simply run:
 
 ```bash
-$ docker-compose up
+$ ./scripts/build.sh
 ```
 
 Navigate to [http://localhost:8081](http://localhost:8081) to view your wordpress site with the already installed `sherplay-h5p-plugin`, you may need to install and activate the `H5P` plugin, also you need to install interactive video library.
