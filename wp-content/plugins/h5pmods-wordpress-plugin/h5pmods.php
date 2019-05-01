@@ -42,18 +42,20 @@ if (!defined('WPINC')) {
  * @param int $minorVersion Second part of the version number.
  */
 function h5pmods_alter_semantics(&$semantics, $name, $majorVersion, $minorVersion) {
-  if ($name == 'H5P.InteractiveVideo') {
-    // Find correct field
-    $interactiveVideofields = $semantics[0];
-    $assetsFields = $interactiveVideofields->fields[1]->fields;
-    $interationsFields = $assetsFields[0]->field->fields;
+  if ($name == 'H5P.Text') {
+    $fields = $semantics[1];
 
-    foreach($interationsFields as $interationField) {
-      if($interationField->name == 'label') {
+    $options = [];
 
-      }
-    }
+    array_push($options, (object) array(
+      'value' => 'test1',
+      'label' => 'test from php'
+    ), (object) array(
+      'value' => 'test2',
+      'label' => 'test from php 2'
+    ));
 
+    $fields->options = $options;
   }
 }
 
@@ -73,8 +75,32 @@ add_action('h5p_alter_library_semantics', 'h5pmods_alter_semantics', 10, 4);
  * @param int $minorVersion Second part of the version number.
  */
 function h5pmods_alter_parameters(&$parameters, $name, $majorVersion, $minorVersion) {
-  if ($name === 'H5P.Text') {
-    $parameters->question .= '<p>Generated at ' . time() . '.</p>';
+  if ($name == 'H5P.Text') {
+    $parameters->question = '<p>Generated at ' . time() . '.</p>';
   }
 }
 add_action('h5p_alter_filtered_parameters', 'h5pmods_alter_parameters', 10, 4);
+
+/**
+ * Allows you to modify user metadata to add a classnote ID
+ * so can be visible for the user.
+ *
+ */
+function add_classnote() {
+	$name = $_POST['name'];
+	$return = array();
+	$return['name'] = $name;
+	$return['post'] = $_POST;
+	echo json_encode($return);
+  wp_die();
+
+}
+add_action('wp_ajax_add_classnote', 'add_classnote');
+add_action('wp_ajax_nopriv_add_classnote', 'add_classnote');
+
+function getApuntes() {
+
+  // TODO: query custom post tyoes "apuntes" to return it 
+
+  $apuntes = $query = new WP_Query( array( 'post_type' => 'classnote' ) );
+}
