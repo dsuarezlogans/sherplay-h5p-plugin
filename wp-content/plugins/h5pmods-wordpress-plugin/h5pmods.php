@@ -44,6 +44,7 @@ if (!defined('WPINC')) {
 function h5pmods_alter_semantics(&$semantics, $name, $majorVersion, $minorVersion) {
   if ($name == 'H5P.Text') {
     $fields = $semantics[1];
+    $ajaxurl = $semantics[2];
 
     $options = [];
 
@@ -56,6 +57,7 @@ function h5pmods_alter_semantics(&$semantics, $name, $majorVersion, $minorVersio
     ));
 
     $fields->options = $options;
+    $ajaxurl->default = admin_url( 'admin-ajax.php' );
   }
 }
 
@@ -87,9 +89,9 @@ add_action('h5p_alter_filtered_parameters', 'h5pmods_alter_parameters', 10, 4);
  *
  */
 function add_classnote() {
-	$name = $_POST['name'];
+	$classnoteId = $_POST['classnoteId'];
 	$return = array();
-	$return['name'] = $name;
+	$return['classnoteId'] = $classnoteId;
 	$return['post'] = $_POST;
 	echo json_encode($return);
   wp_die();
