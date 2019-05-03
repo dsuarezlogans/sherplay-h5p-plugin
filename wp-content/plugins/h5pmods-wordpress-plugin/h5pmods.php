@@ -46,15 +46,7 @@ function h5pmods_alter_semantics(&$semantics, $name, $majorVersion, $minorVersio
     $fields = $semantics[1];
     $ajaxurl = $semantics[2];
 
-    $options = [];
-
-    array_push($options, (object) array(
-      'value' => 'test1',
-      'label' => 'test from php'
-    ), (object) array(
-      'value' => 'test2',
-      'label' => 'test from php 2'
-    ));
+    $options = getApuntes();
 
     $fields->options = $options;
     $ajaxurl->default = admin_url( 'admin-ajax.php' );
@@ -102,7 +94,24 @@ add_action('wp_ajax_nopriv_add_classnote', 'add_classnote');
 
 function getApuntes() {
 
-  // TODO: query custom post tyoes "apuntes" to return it 
+  $classnotes = $query = new WP_Query( array( 'post_type' => 'classnote' ) );
+  $options = [];
 
-  $apuntes = $query = new WP_Query( array( 'post_type' => 'classnote' ) );
+  if( $classnotes->have_posts() ) {
+
+    while( $classnotes->have_posts() ) {
+      $classnotes->the_post();
+      
+      $value = get_the_ID();
+      $label = get_the_title();
+
+      array_push( $options, (object) array(
+        'value' => $value,
+        'label' => $label
+      ));
+
+    }
+
+  }
+  return $options;
 }

@@ -26,6 +26,7 @@ wp-content/uploads/
 wp-content/mu-plugins/
 wp-content/plugins/index.php
 wp-content/plugins/h5p
+wp-content/plugins/custom-post-type-ui
 wp-content/themes
 wp-content/wp-cache-config.php
 
@@ -40,3 +41,5 @@ wp-includes/
 /sitemap.xml
 /sitemap.xml.gz
 /xmlrpc.php
+
+*.zip
