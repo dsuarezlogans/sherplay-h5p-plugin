@@ -17,7 +17,7 @@ Now you can easily start to work and interact with the plugin. To run the local 
 $ ./scripts/start.sh
 ```
 
-Navigate to [http://localhost:8081](http://localhost:8081) to view your wordpress site with the already installed `sherplay-h5p-plugin` and them follow the steps below: 
+Navigate to [http://localhost:8081](http://localhost:8081) to view your wordpress site with the already installed `sherplay-h5p-plugin` and then follow the steps below: 
 
 - Install `H5P` plugin.
 - Activate the `H5P` plugin.
