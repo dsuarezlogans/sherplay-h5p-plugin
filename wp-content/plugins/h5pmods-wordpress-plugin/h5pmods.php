@@ -11,11 +11,11 @@
  * @copyright 2019 MIT
  *
  * @wordpress-plugin
- * Plugin Name:       H5P Mods
+ * Plugin Name:       H5P Mods Classnote
  * Plugin URI:        http://h5p.org/
- * Description:       Allows you to alter how the H5P plugin works.
- * Version:           0.0.1
- * Author:            Joubel
+ * Description:       Allows you to alter how the H5P plugin works. Adding a unblock classnote functionality along H5P.Text library.
+ * Version:           1.0.0
+ * Author:            Danny
  * Author URI:        http://joubel.com
  * Text Domain:       h5pmods
  * License:           MIT
