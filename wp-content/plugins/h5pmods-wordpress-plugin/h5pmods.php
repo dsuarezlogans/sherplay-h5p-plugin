@@ -46,7 +46,7 @@ function h5pmods_alter_semantics(&$semantics, $name, $majorVersion, $minorVersio
     $fields = $semantics[1];
     $ajaxurl = $semantics[2];
 
-    $options = getApuntes();
+    $options = getClassnotes();
 
     $fields->options = $options;
     $ajaxurl->default = admin_url( 'admin-ajax.php' );
@@ -76,15 +76,25 @@ function h5pmods_alter_parameters(&$parameters, $name, $majorVersion, $minorVers
 add_action('h5p_alter_filtered_parameters', 'h5pmods_alter_parameters', 10, 4);
 
 /**
- * Allows you to modify user metadata to add a classnote ID
- * so can be visible for the user.
+ * Ajax hook that assing classnote Id to a user metadata.
  *
+ * @return object the response object to the client.
  */
 function add_classnote() {
-	$classnoteId = $_POST['classnoteId'];
-	$return = array();
+
+  $classnoteId = $_POST['classnoteId'];
+  $user_id = get_current_user_id();
+  $return = array();
+  $return['success'] = false;
+
+  if($user_id && !has_user_classnote($classnoteId)) {
+    add_user_meta( $user_id, 'allow_classnote', $classnoteId, false );
+    $return['success'] = true;
+  }
+
 	$return['classnoteId'] = $classnoteId;
-	$return['post'] = $_POST;
+  $return['userId'] = $user_id;
+  
 	echo json_encode($return);
   wp_die();
 
@@ -92,7 +102,46 @@ function add_classnote() {
 add_action('wp_ajax_add_classnote', 'add_classnote');
 add_action('wp_ajax_nopriv_add_classnote', 'add_classnote');
 
-function getApuntes() {
+
+function render_classnote() {
+  global $post;
+  
+  if ($post->post_type == 'classnote') {
+    
+    if(!has_user_classnote($post->ID)) {
+      wp_redirect( home_url() );
+    }
+  }
+
+}
+add_filter( 'template_redirect', 'render_classnote', -1);
+
+/**
+ * Search for classnote to be available for user.
+ * 
+ * @return boolean is true is user has access, otherwise is false.
+ */
+function has_user_classnote($postID) {
+  
+  $user_id = get_current_user_id();
+  $key = 'allow_classnote';
+  $user_classnotes = get_user_meta($user_id, $key);
+
+  foreach($user_classnotes as $classnote) {
+    if($classnote == $postID) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * returns a list of all classnotes available.
+ *
+ * @return array[object] an array of classnote object.
+ */
+function getClassnotes() {
 
   $classnotes = $query = new WP_Query( array( 'post_type' => 'classnote' ) );
   $options = [];
