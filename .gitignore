@@ -1,5 +1,7 @@
 .DS_Store
-*.log
+*.
+
+.maintenance
 
 wp-activate.php
 wp-blog-header.php

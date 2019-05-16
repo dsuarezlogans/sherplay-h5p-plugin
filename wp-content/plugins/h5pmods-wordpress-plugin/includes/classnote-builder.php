@@ -190,7 +190,7 @@ add_action( 'init', 'create_notetype_category' );
 
 function add_courses_to_notetype() {
 
-    $courses = new WP_Query( array( 'post_type' => 'page' ) );
+    $courses = new WP_Query( array( 'post_type' => 'sfwd-courses' ) );
 
     if( $courses->have_posts() ) {
 

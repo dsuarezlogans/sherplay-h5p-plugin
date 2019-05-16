@@ -24,7 +24,8 @@
  * GitHub Plugin URI: https://github.com/h5p/h5pmods-wordpress-plugin
  */
 
-require_once dirname( __FILE__ ) .'/includes/templater.php';
+require_once dirname( __FILE__ ) .'/includes/classnote-builder.php';
+require_once dirname( __FILE__ ) .'/includes/classnote-widget.php';
 
 // If this file is called directly, abort.
 if (!defined('WPINC')) {
@@ -137,7 +138,6 @@ function has_user_classnote($postID) {
 
   return false;
 }
-
 define('has_user_classnote', 'has_user_classnote');
 
 /**
