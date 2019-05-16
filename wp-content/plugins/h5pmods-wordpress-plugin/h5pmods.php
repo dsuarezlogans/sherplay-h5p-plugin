@@ -11,11 +11,11 @@
  * @copyright 2019 MIT
  *
  * @wordpress-plugin
- * Plugin Name:       H5P Mods
+ * Plugin Name:       H5P Mods Classnote
  * Plugin URI:        http://h5p.org/
- * Description:       Allows you to alter how the H5P plugin works.
- * Version:           0.0.1
- * Author:            Joubel
+ * Description:       Allows you to alter how the H5P plugin works. Adding a unblock classnote functionality along H5P.Text library.
+ * Version:           1.0.0
+ * Author:            Danny
  * Author URI:        http://joubel.com
  * Text Domain:       h5pmods
  * License:           MIT
@@ -23,6 +23,9 @@
  * Domain Path:       /languages
  * GitHub Plugin URI: https://github.com/h5p/h5pmods-wordpress-plugin
  */
+
+require_once dirname( __FILE__ ) .'/includes/classnote-builder.php';
+require_once dirname( __FILE__ ) .'/includes/classnote-widget.php';
 
 // If this file is called directly, abort.
 if (!defined('WPINC')) {
@@ -46,7 +49,7 @@ function h5pmods_alter_semantics(&$semantics, $name, $majorVersion, $minorVersio
     $fields = $semantics[1];
     $ajaxurl = $semantics[2];
 
-    $options = getApuntes();
+    $options = getClassnotes();
 
     $fields->options = $options;
     $ajaxurl->default = admin_url( 'admin-ajax.php' );
@@ -76,15 +79,25 @@ function h5pmods_alter_parameters(&$parameters, $name, $majorVersion, $minorVers
 add_action('h5p_alter_filtered_parameters', 'h5pmods_alter_parameters', 10, 4);
 
 /**
- * Allows you to modify user metadata to add a classnote ID
- * so can be visible for the user.
+ * Ajax hook that assing classnote Id to a user metadata.
  *
+ * @return object the response object to the client.
  */
 function add_classnote() {
-	$classnoteId = $_POST['classnoteId'];
-	$return = array();
+
+  $classnoteId = $_POST['classnoteId'];
+  $user_id = get_current_user_id();
+  $return = array();
+  $return['success'] = false;
+
+  if($user_id && !has_user_classnote($classnoteId)) {
+    add_user_meta( $user_id, 'allow_classnote', $classnoteId, false );
+    $return['success'] = true;
+  }
+
 	$return['classnoteId'] = $classnoteId;
-	$return['post'] = $_POST;
+  $return['userId'] = $user_id;
+  
 	echo json_encode($return);
   wp_die();
 
@@ -92,9 +105,49 @@ function add_classnote() {
 add_action('wp_ajax_add_classnote', 'add_classnote');
 add_action('wp_ajax_nopriv_add_classnote', 'add_classnote');
 
-function getApuntes() {
 
-  $classnotes = $query = new WP_Query( array( 'post_type' => 'classnote' ) );
+function render_classnote() {
+  global $post;
+  
+  if ($post->post_type == 'classnote') {
+    
+    if(!has_user_classnote($post->ID)) {
+      wp_redirect( home_url() );
+    }
+  }
+
+}
+add_filter( 'template_redirect', 'render_classnote', -1);
+
+/**
+ * Search for classnote to be available for user.
+ * 
+ * @return boolean is true is user has access, otherwise is false.
+ */
+function has_user_classnote($postID) {
+  
+  $user_id = get_current_user_id();
+  $key = 'allow_classnote';
+  $user_classnotes = get_user_meta($user_id, $key);
+
+  foreach($user_classnotes as $classnote) {
+    if($classnote == $postID) {
+      return true;
+    }
+  }
+
+  return false;
+}
+define('has_user_classnote', 'has_user_classnote');
+
+/**
+ * returns a list of all classnotes available.
+ *
+ * @return array[object] an array of classnote object.
+ */
+function getClassnotes() {
+
+  $classnotes = new WP_Query( array( 'post_type' => 'classnote' ) );
   $options = [];
 
   if( $classnotes->have_posts() ) {
