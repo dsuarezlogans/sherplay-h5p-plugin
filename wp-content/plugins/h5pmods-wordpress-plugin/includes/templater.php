@@ -151,3 +151,64 @@ public function view_project_template( $template ) {
 
 } 
 add_action( 'plugins_loaded', array( 'PageTemplater', 'get_instance' ) );
+
+function create_classnote_post_type() {
+  register_post_type( 'classnote',
+    array(
+      'labels' => array(
+        'name' => __( 'Apuntes' ),
+        'singular_name' => __( 'Apunte' )
+      ),
+        'publicly_queryable' => true,
+        'show_ui' => true,
+        'query_var' => true,
+        'rewrite' => true,
+        'capability_type' => 'post',
+        'hierarchical' => false,
+        'menu_position' => null,
+        'menu_icon' => 'dashicons-edit',
+        'supports' => array('title','editor','thumbnail')
+    )
+  );
+}
+add_action( 'init', 'create_classnote_post_type' );
+
+function create_notetype_category() {
+
+    register_taxonomy(
+        'classnote-category',
+        'classnote',
+        array(
+            'label' => __( 'Cursos' ),
+            'rewrite' => array( 'slug' => 'classnote-category' ),
+            'hierarchical' => true,
+        )
+    );
+    
+}
+add_action( 'init', 'create_notetype_category' );
+
+function add_courses_to_notetype() {
+
+    $courses = new WP_Query( array( 'post_type' => 'page' ) );
+
+    if( $courses->have_posts() ) {
+
+        while( $courses->have_posts() ) {
+            $courses->the_post();
+            
+            $courseID = get_the_ID();
+            $title = get_the_title();
+
+            wp_insert_category(array(
+                'cat_name' => $title,
+                'category_description' => $title,
+                'category_nicename' => $courseID,
+                'category_parent' => '',
+                'taxonomy' => 'classnote-category'
+            ));
+        }
+    
+      }
+}
+add_action( 'admin_init', 'add_courses_to_notetype' );
