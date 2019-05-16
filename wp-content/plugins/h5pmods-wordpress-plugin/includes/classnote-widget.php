@@ -18,7 +18,7 @@ class classnote_Widget extends WP_Widget {
     $title = apply_filters( 'widget_title', $instance[ 'title' ] );
     $moreLink = $instance[ 'more-link' ];
     $classnotes = getClassnotesByTerm($post->ID);
-    echo $args['before_widget'] . $args['before_title'] . $title . $args['after_title'] . $post->post_type; 
+    echo $args['before_widget'] . $args['before_title'] . $title . $args['after_title']; 
     
     if( $classnotes->have_posts() && $post->post_type == 'sfwd-courses') {
 
