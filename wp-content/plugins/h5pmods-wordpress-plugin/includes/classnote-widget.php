@@ -25,13 +25,17 @@ class classnote_Widget extends WP_Widget {
         while( $classnotes->have_posts() ) {
             $classnotes->the_post(); ?>
   
-            <p><a href="<?php the_permalink(); ?>"> <?php echo get_the_title() ?> </a></p>
+            <p class="classnote-menu--widget__item">
+              <a class="classnote-menu--widget__link" href="<?php the_permalink(); ?>"> <?php echo get_the_title() ?> </a>
+            </p>
             
     <?php 
         } 
     } ?>
 
-    <p><a href="<?php echo $moreLink ?>">Ver Mas</a></p>   
+    <p class="classnote-more--widget">
+      <a class="classnote-more--widget__link" href="<?php echo $moreLink ?>">Ver Mas</a>
+    </p>   
     
     <?php echo $args['after_widget'];
   }
