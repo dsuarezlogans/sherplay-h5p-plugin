@@ -137,6 +137,10 @@ public function view_project_template( $template ) {
         $post->ID, '_wp_page_template', true 
     );
 
+    if(!is_user_logged_in()) {
+      wp_redirect( home_url() );
+    }
+
     // Just to be safe, we check if the file exist first
     if ( file_exists( $file ) ) {
         return $file;

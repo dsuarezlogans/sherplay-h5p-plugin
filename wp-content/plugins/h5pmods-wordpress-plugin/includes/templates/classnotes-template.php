@@ -5,38 +5,41 @@
 <div id="primary" class="content-area classnote-container">
   <main id="main" class="site-main classnote-container__main" role="main">
     <?php $classnotes = new WP_Query( array( 'post_type' => 'classnote' ) ); ?>
-    <?php $notetypes = get_terms( array('taxonomy' => 'classnote-category') ) ?>
 
-    <?php if ( $classnotes->have_posts() ) : ?>
+    <?php 
+      $classnotesByTerms = array();
+      $clasnotesList = '';
 
-      <?php foreach($notetypes as $notetype) { ?>
+      if ( $classnotes->have_posts() ) {
+        while( $classnotes->have_posts() ) {
 
-        <span class="notetype-title"><?php echo $notetype->name; ?></span>
+          $classnotes->the_post();
+          $classnoteID = get_the_ID();
 
-        <ul class="classnote-menu">
-          
-          <?php while ( $classnotes->have_posts() ) : $classnotes->the_post(); ?>
+          if(has_user_classnote($classnoteID) || current_user_can('administrator')) {
+
+            $classnoteTerm = get_the_terms($classnoteID, 'classnote-category')[0]->name;
+            $link = get_the_permalink();
+            $title = get_the_title();
+            $clasnote = '<li class="classnote-menu__item"><a href="'. $link . '">'. $title . '</a></li>';
             
-            <?php if(has_user_classnote(get_the_ID()) || current_user_can('administrator')) : ?>
-              
-              <?php if($notetype->name == get_the_terms(get_the_ID(), 'classnote-category')[0]->name ) : ?>
-              
-                <li class="classnote-menu__item">
-                  <a href="<?php the_permalink(); ?>"><?php the_title(); $notetype; ?></a>
-                </li>
+            if(isset($classnotesByTerms[$classnoteTerm])) {
+              $classnotesByTerms[$classnoteTerm] .= $clasnote;
+            } else {
+              $classnotesByTerms[$classnoteTerm] = $clasnote;
+            }
 
-              <?php endif; ?>
+          }    
+        }
+      }
 
-            <?php endif; ?>
-          
-          <?php endwhile; ?>
+      foreach ( $classnotesByTerms as $term=>$notes ) {
+        echo '<span class="notetype-title">' . $term . '</span>';
+        echo $notes;
+      }
+      
+    ?>
 
-        </ul><!-- .classnote-menu -->
-
-      <?php } ?>
-
-    <?php endif; ?>
-    
   </main><!-- .site-main -->
 </div><!-- .content-area -->
 
