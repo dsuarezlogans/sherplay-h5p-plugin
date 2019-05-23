@@ -28,7 +28,10 @@ wp-content/uploads/
 wp-content/mu-plugins/
 wp-content/plugins/index.php
 wp-content/plugins/h5p
-wp-content/plugins/custom-post-type-ui
+wp-content/plugins/sitepress-multilingual-cms
+wp-content/plugins/wpml-string-translation
+wp-content/plugins/wpml-translation-management
+wp-content/languages
 wp-content/themes
 wp-content/wp-cache-config.php
 
@@ -45,3 +48,4 @@ wp-includes/
 /xmlrpc.php
 
 *.zip
+

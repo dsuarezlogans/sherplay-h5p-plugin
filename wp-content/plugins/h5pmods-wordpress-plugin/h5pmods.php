@@ -89,13 +89,24 @@ function add_classnote() {
   $user_id = get_current_user_id();
   $return = array();
   $return['success'] = false;
+  $tranlationID = NULL;
+
+  if(function_exists('icl_object_id')) {
+    $tranlationID = icl_object_id($classnoteId, 'post', false, 'es');
+  }
 
   if($user_id && !has_user_classnote($classnoteId)) {
     add_user_meta( $user_id, 'allow_classnote', $classnoteId, false );
     $return['success'] = true;
   }
 
+  if($tranlationID && $user_id && !has_user_classnote($tranlationID)) {
+    add_user_meta( $user_id, 'allow_classnote', $tranlationID, false );
+    $return['success'] = true;
+  }
+
 	$return['classnoteId'] = $classnoteId;
+  $return['translationID'] = $tranlationID;
   $return['userId'] = $user_id;
   
 	echo json_encode($return);
@@ -111,7 +122,7 @@ function render_classnote() {
   
   if ($post->post_type == 'classnote') {
     
-    if(!has_user_classnote($post->ID)) {
+    if(!has_user_classnote($post->ID) && !current_user_can('administrator')) {
       wp_redirect( home_url() );
     }
   }
