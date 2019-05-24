@@ -9,6 +9,7 @@
     <?php 
       $classnotesByTerms = array();
       $clasnotesList = '';
+      $userHasNoClassnote = true;
 
       if ( $classnotes->have_posts() ) {
         while( $classnotes->have_posts() ) {
@@ -18,6 +19,7 @@
 
           if(has_user_classnote($classnoteID) || current_user_can('administrator')) {
 
+            $userHasNoClassnote = false;
             $classnoteTerm = get_the_terms($classnoteID, 'classnote-category')[0]->name;
             $link = get_the_permalink();
             $title = get_the_title();
@@ -31,6 +33,13 @@
 
           }    
         }
+        
+      }
+
+      if(!$classnotesByTerms) {
+        while ( have_posts() ) : the_post(); 
+          the_content();
+        endwhile;
       }
 
       foreach ( $classnotesByTerms as $term=>$notes ) {
