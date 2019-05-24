@@ -21,7 +21,7 @@ class classnote_Widget extends WP_Widget {
     $classnotes = getClassnotesByTerm($post->ID);
     $sfwd_content = ['sfwd-courses', 'sfwd-lessons', 'sfwd-topic'];
 
-    if(is_array($post->post_type, $sfwd_content)) {
+    if(in_array($post->post_type, $sfwd_content)) {
 
     echo $args['before_widget'] . $args['before_title'] . $title . $args['after_title']; 
     
@@ -75,6 +75,9 @@ function getClassnotesByTerm($term) {
               'taxonomy' => 'classnote-category',
               'field' => 'slug',
               'terms' => $term,
+              'posts_per_page' => '5',
+              'orderby' => 'date',
+              'order' => 'DESC'
           )
       ),
     ) );
