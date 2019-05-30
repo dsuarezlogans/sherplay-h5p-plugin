@@ -18,9 +18,9 @@ class classnote_Widget extends WP_Widget {
     $title = apply_filters( 'widget_title', $instance[ 'title' ] );
     $moreLabel = $instance[ 'more-label' ];
     $moreLink = $instance[ 'more-link' ];
-    $classnotes = getClassnotesByTerm($post->ID);
+    $classnotes = getClassnotesByTerm();
     $sfwd_content = ['sfwd-courses', 'sfwd-lessons', 'sfwd-topic'];
-
+    
     if(in_array($post->post_type, $sfwd_content)) {
 
     echo $args['before_widget'] . $args['before_title'] . $title . $args['after_title']; 
@@ -29,7 +29,7 @@ class classnote_Widget extends WP_Widget {
 
         while( $classnotes->have_posts() ) {
             $classnotes->the_post(); ?>
-  
+              
             <p class="classnote-menu--widget__item">
               <a class="classnote-menu--widget__link" href="<?php the_permalink(); ?>"> <?php echo get_the_title() ?> </a>
             </p>
@@ -66,20 +66,13 @@ class classnote_Widget extends WP_Widget {
 
 }
 
-function getClassnotesByTerm($term) {
+function getClassnotesByTerm() {
 
     $classnotes = new WP_Query( array(
       'post_type' => 'classnote',
-      'tax_query' => array(
-          array (
-              'taxonomy' => 'classnote-category',
-              'field' => 'slug',
-              'terms' => $term,
-              'posts_per_page' => '5',
-              'orderby' => 'date',
-              'order' => 'DESC'
-          )
-      ),
+      'posts_per_page' => '5',
+      'orderby' => 'date',
+      'order' => 'DESC'
     ) );
 
     return $classnotes;
