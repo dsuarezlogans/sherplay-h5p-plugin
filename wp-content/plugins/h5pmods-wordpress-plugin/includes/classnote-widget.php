@@ -19,22 +19,27 @@ class classnote_Widget extends WP_Widget {
     $moreLabel = $instance[ 'more-label' ];
     $moreLink = $instance[ 'more-link' ];
     $classnotes = getClassnotesByTerm();
-    $sfwd_content = ['sfwd-courses', 'sfwd-lessons', 'sfwd-topic'];
+    $user_id = get_current_user_id();
+    $sfwd_content = ['sfwd-courses', 'sfwd-lessons', 'sfwd-topic', 'classnote'];
     
     if(in_array($post->post_type, $sfwd_content)) {
 
     echo $args['before_widget'] . $args['before_title'] . $title . $args['after_title']; 
     
     if( $classnotes->have_posts()) {
-
+      
         while( $classnotes->have_posts() ) {
-            $classnotes->the_post(); ?>
+            $classnotes->the_post();
+            $classnoteID = get_the_ID(); 
+            
+            if(has_user_classnote($classnoteID, $user_id)) { ?>
               
             <p class="classnote-menu--widget__item">
               <a class="classnote-menu--widget__link" href="<?php the_permalink(); ?>"> <?php echo get_the_title() ?> </a>
             </p>
             
     <?php 
+            }
         } 
     } ?>
 
