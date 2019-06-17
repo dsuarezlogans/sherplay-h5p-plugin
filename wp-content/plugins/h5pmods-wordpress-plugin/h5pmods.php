@@ -95,12 +95,12 @@ function add_classnote() {
     $tranlationID = icl_object_id($classnoteId, 'post', false, 'es');
   }
 
-  if($user_id && !has_user_classnote($classnoteId)) {
+  if($user_id && !has_user_classnote($classnoteId, $user_id)) {
     add_user_meta( $user_id, 'allow_classnote', $classnoteId, false );
     $return['success'] = true;
   }
 
-  if($tranlationID && $user_id && !has_user_classnote($tranlationID)) {
+  if($tranlationID && $user_id && !has_user_classnote($tranlationID, $user_id)) {
     add_user_meta( $user_id, 'allow_classnote', $tranlationID, false );
     $return['success'] = true;
   }
@@ -119,10 +119,11 @@ add_action('wp_ajax_nopriv_add_classnote', 'add_classnote');
 
 function render_classnote() {
   global $post;
+  $user_id = get_current_user_id();
   
   if ($post->post_type == 'classnote') {
     
-    if(!has_user_classnote($post->ID) && !current_user_can('administrator')) {
+    if(!has_user_classnote($post->ID, $user_id) && !current_user_can('administrator')) {
       wp_redirect( home_url() );
     }
   }
@@ -135,9 +136,8 @@ add_filter( 'template_redirect', 'render_classnote', -1);
  * 
  * @return boolean is true is user has access, otherwise is false.
  */
-function has_user_classnote($postID) {
+function has_user_classnote($postID, $user_id) {
   
-  $user_id = get_current_user_id();
   $key = 'allow_classnote';
   $user_classnotes = get_user_meta($user_id, $key);
 

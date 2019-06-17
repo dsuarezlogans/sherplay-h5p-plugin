@@ -10,14 +10,15 @@
       $classnotesByTerms = array();
       $clasnotesList = '';
       $userHasNoClassnote = true;
-
+      $user_id = get_current_user_id();
+      
       if ( $classnotes->have_posts() ) {
         while( $classnotes->have_posts() ) {
 
           $classnotes->the_post();
           $classnoteID = get_the_ID();
 
-          if(has_user_classnote($classnoteID) || current_user_can('administrator')) {
+          if(has_user_classnote($classnoteID, $user_id) || current_user_can('administrator')) {
 
             $userHasNoClassnote = false;
             $classnoteTerm = get_the_terms($classnoteID, 'classnote-category')[0]->name;
