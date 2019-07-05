@@ -18,9 +18,11 @@ class classnote_Widget extends WP_Widget {
     $title = apply_filters( 'widget_title', $instance[ 'title' ] );
     $moreLabel = $instance[ 'more-label' ];
     $moreLink = $instance[ 'more-link' ];
-    $classnotes = getClassnotesByTerm();
+    $qtyItems = $instance[ 'qty-items' ];
+    $courseID = $post->ID;
+    $classnotes = getClassnotesByTerm($qtyItems, $courseID);
     $user_id = get_current_user_id();
-    $sfwd_content = ['sfwd-courses', 'sfwd-lessons', 'sfwd-topic', 'classnote'];
+    $sfwd_content = ['sfwd-courses', 'sfwd-lessons', 'sfwd-topic', 'classnote', 'page'];
     
     if(in_array($post->post_type, $sfwd_content)) {
 
@@ -54,7 +56,8 @@ class classnote_Widget extends WP_Widget {
   public function form( $instance ) {
     $title = ! empty( $instance['title'] ) ? $instance['title'] : '';
     $moreLabel = ! empty( $instance['more-label'] ) ? $instance['more-label'] : '';
-    $moreLink = ! empty( $instance['more-link'] ) ? $instance['more-link'] : ''; ?>
+    $moreLink = ! empty( $instance['more-link'] ) ? $instance['more-link'] : '';
+    $qtyItems = ! empty( $instance['qty-items'] ) ? $instance['qty-items'] : ''; ?>
     <p>
       <label for="<?php echo $this->get_field_id( 'title' ); ?>">Title:</label>
       <input type="text" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo esc_attr( $title ); ?>" />
@@ -66,18 +69,33 @@ class classnote_Widget extends WP_Widget {
     <p>
       <label for="<?php echo $this->get_field_id( 'more-link' ); ?>">Ver Mas link:</label>
       <input type="text" id="<?php echo $this->get_field_id( 'more-link' ); ?>" name="<?php echo $this->get_field_name( 'more-link' ); ?>" value="<?php echo esc_attr( $moreLink ); ?>" placeholder="https:// ..."/>
+    </p>
+    <p>
+      <label for="<?php echo $this->get_field_id( 'qty-items' ); ?>">Mostrar:</label>
+      <select id="<?php echo $this->get_field_id( 'qty-items' ); ?>" name="<?php echo $this->get_field_name( 'qty-items' ); ?>">
+        <option value="5" <?php echo ($qtyItems=='5')?'selected':''; ?> >5</option>
+        <option value="10" <?php echo ($qtyItems=='10')?'selected':''; ?> >10</option>
+        <option value="15" <?php echo ($qtyItems=='15')?'selected':''; ?> >15</option>
+      </select>
     </p><?php
   }
 
 }
 
-function getClassnotesByTerm() {
+function getClassnotesByTerm($qtyItems, $courseID) {
 
     $classnotes = new WP_Query( array(
       'post_type' => 'classnote',
-      'posts_per_page' => '5',
+      'posts_per_page' => $qtyItems,
       'orderby' => 'date',
-      'order' => 'DESC'
+      'order' => 'DESC',
+      'tax_query' => array(
+        array(
+          'taxonomy' => 'classnote-category',
+          'field'    => 'slug',
+          'terms'    => $courseID,
+        ),
+      ),
     ) );
 
     return $classnotes;
