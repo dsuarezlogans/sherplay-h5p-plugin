@@ -73,9 +73,9 @@ class classnote_Widget extends WP_Widget {
     <p>
       <label for="<?php echo $this->get_field_id( 'qty-items' ); ?>">Mostrar:</label>
       <select id="<?php echo $this->get_field_id( 'qty-items' ); ?>" name="<?php echo $this->get_field_name( 'qty-items' ); ?>">
-        <option value="1" <?php echo ($qtyItems=='1')?'selected':''; ?> >1</option>
-        <option value="2" <?php echo ($qtyItems=='2')?'selected':''; ?> >2</option>
-        <option value="3" <?php echo ($qtyItems=='3')?'selected':''; ?> >3</option>
+        <option value="5" <?php echo ($qtyItems=='5')?'selected':''; ?> >5</option>
+        <option value="10" <?php echo ($qtyItems=='10')?'selected':''; ?> >10</option>
+        <option value="15" <?php echo ($qtyItems=='15')?'selected':''; ?> >15</option>
       </select>
     </p><?php
   }
