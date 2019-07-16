@@ -38,6 +38,7 @@ wp-content/wp-cache-config.php
 wp-admin/
 
 wp-includes/
+wp-content/plugins/sfwd-lms
 
 /.htaccess
 /index.php

@@ -20,10 +20,10 @@ class classnote_Widget extends WP_Widget {
     $moreLink = $instance[ 'more-link' ];
     $qtyItems = $instance[ 'qty-items' ];
     $courseID = $post->ID;
-    $classnotes = getClassnotesByTerm($qtyItems, $courseID);
+    $classnotes = getClassnotesByTerm($qtyItems, $courseID, $post->post_type);
     $user_id = get_current_user_id();
     $sfwd_content = ['sfwd-courses', 'sfwd-lessons', 'sfwd-topic', 'classnote', 'page'];
-    
+
     if(in_array($post->post_type, $sfwd_content)) {
 
     echo $args['before_widget'] . $args['before_title'] . $title . $args['after_title']; 
@@ -82,7 +82,11 @@ class classnote_Widget extends WP_Widget {
 
 }
 
-function getClassnotesByTerm($qtyItems, $courseID) {
+function getClassnotesByTerm($qtyItems, $courseID, $postType) {
+    
+    if($postType == 'sfwd-lessons' || $postType == 'sfwd-topic') {
+      $courseID = learndash_get_setting($courseID, 'course');
+    }
 
     $classnotes = new WP_Query( array(
       'post_type' => 'classnote',
